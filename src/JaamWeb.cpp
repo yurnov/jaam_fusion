@@ -3352,6 +3352,9 @@ document.addEventListener('DOMContentLoaded', () => {
     html += "<div class='header-container'>";
     html += "<h1>Редактор власної карти LED</h1>";
     html += "<div class='header-buttons'>";
+    html += "<button class='control-button' onclick='location.href=\"/\"' title='На головну'>";
+    html += "<svg viewBox='0 0 24 24'><path d='M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z'/></svg>";
+    html += "</button>";
     html += "<button id='saveBtn' onclick='saveMap()' disabled class='control-button' title='Зберегти карту'>Завантаження...</button>";
     html += "<button class='control-button theme-toggle' onclick='toggleTheme()' title='Перемкнути тему'>";
     html += "<svg viewBox='0 0 24 24'>";
@@ -3623,6 +3626,9 @@ document.addEventListener('DOMContentLoaded', () => {
     html += "<div class='header-container'>";
     html += "<h1>Редактор кольорів задніх LED</h1>";
     html += "<div class='header-buttons'>";
+    html += "<button class='control-button' onclick='location.href=\"/\"' title='На головну'>";
+    html += "<svg viewBox='0 0 24 24'><path d='M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z'/></svg>";
+    html += "</button>";
     html += "<button id='saveBtn' onclick='saveColors()' disabled class='control-button' title='Зберегти кольори'>Завантаження...</button>";
     html += "<button class='control-button theme-toggle' onclick='toggleTheme()' title='Перемкнути тему'>";
     html += "<svg viewBox='0 0 24 24'>";
