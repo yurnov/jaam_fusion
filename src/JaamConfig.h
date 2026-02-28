@@ -110,6 +110,9 @@ struct RegionLedMapEntry {
     uint8_t led_count;
 };
 
+// --- Main LED strip maximum ---
+constexpr int MAX_MAIN_LEDS = 1000;                         // Максимум LED основної стрічки
+
 // --- Background LED color mapping ---
 constexpr int MAX_BG_LEDS = 300;                            // Максимум задніх LED
 

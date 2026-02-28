@@ -2795,8 +2795,11 @@ void JaamWeb::handleTextParameter() {
             LOG.printf("[WEB] Setting main_led_pin: %s\n", valuePtr);
             needReconnectMainStrip = true;
         } else if (name == "main_led_count") {
-            settings->saveInt(MAIN_LED_COUNT, value.toInt());
-            LOG.printf("[WEB] Setting main_led_count: %s\n", valuePtr);
+            int count = value.toInt();
+            if (count < 0) count = 0;
+            if (count > MAX_MAIN_LEDS) count = MAX_MAIN_LEDS;
+            settings->saveInt(MAIN_LED_COUNT, count);
+            LOG.printf("[WEB] Setting main_led_count: %d\n", count);
             needReconnectMainStrip = true;
             needRecalculateLeds = true;
         } else if (name == "bg_led_pin") {

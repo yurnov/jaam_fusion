@@ -33,8 +33,12 @@ int JaamHardware::getMainLedsCount() {
         case HARDWARE::ODESA_KYIV:
         case HARDWARE::ZAKARPATTIA_KYIV:
             return JaamHardwareLed::MAIN_LED_COUNT_KYIV;
-        case HARDWARE::CUSTOM_MAPPING:
-            return settings.getInt(MAIN_LED_COUNT);
+        case HARDWARE::CUSTOM_MAPPING: {
+            int count = settings.getInt(MAIN_LED_COUNT);
+            if (count < 0) count = 0;
+            if (count > MAX_MAIN_LEDS) count = MAX_MAIN_LEDS;
+            return count;
+        }
         default:
             return JaamHardwareLed::MAIN_LED_COUNT_DEFAULT;
     }
