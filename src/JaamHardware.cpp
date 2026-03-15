@@ -290,8 +290,21 @@ uint8_t JaamHardware::getMaxBrightness() {
             return JaamHardwareLed::BRIGHTNESS_JAAM_2_1_MAX;
         case HARDWARE::JAAM_1_3:
             return JaamHardwareLed::BRIGHTNESS_JAAM_1_3_MAX;
-        default:
+        default: {
+            int customMax = settings.getInt(BRIGHTNESS_MAX);
+            if (customMax > 0) {
+                // Clamp to safety limit
+                if (customMax > JaamHardwareLed::BRIGHTNESS_ABSOLUTE_MAX) {
+                    customMax = JaamHardwareLed::BRIGHTNESS_ABSOLUTE_MAX;
+                }
+                // Ensure it's at least the default minimum brightness
+                if (customMax < JaamHardwareLed::BRIGHTNESS_DEFAULT_MAX) {
+                    customMax = JaamHardwareLed::BRIGHTNESS_DEFAULT_MAX;
+                }
+                return static_cast<uint8_t>(customMax);
+            }
             return JaamHardwareLed::BRIGHTNESS_DEFAULT_MAX;
+        }
     }
 }
 

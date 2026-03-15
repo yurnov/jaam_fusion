@@ -68,6 +68,9 @@ namespace JaamHardwareLed {
     constexpr uint8_t BRIGHTNESS_JAAM_3_2_MIN = 2;
     constexpr uint8_t BRIGHTNESS_JAAM_1_3_MIN = 3;
     constexpr uint8_t BRIGHTNESS_JAAM_2_1_MIN = 2;
+
+    // Absolute maximum brightness cap (safety limit, ~90% of 255)
+    constexpr uint8_t BRIGHTNESS_ABSOLUTE_MAX = 230;
 }
 
 class JaamHardware {

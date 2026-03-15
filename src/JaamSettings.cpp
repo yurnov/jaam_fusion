@@ -99,6 +99,7 @@ std::map<Type, SettingItemInt> intSettings = {
     {BRIGHTNESS_SERVICE, {"bs", 50}},
     {BRIGHTNESS_ANIMATION_END, {"baend", 20}},
     {BRIGHTNESS_MIN, {"brmin", 0}},
+    {BRIGHTNESS_MAX, {"brmax", 0}},
     {NIGHT_MODE_LIGHT_THRESHOLD, {"nmlt", 30}},
     {WEATHER_MIN_TEMP, {"mintemp", -10}},
     {WEATHER_MAX_TEMP, {"maxtemp", 30}},
@@ -324,6 +325,20 @@ bool JaamSettings::validateIntSetting(Type type, int value) {
     if (type == API_PORT && value == 80) {
         LOG.printf("[SETTINGS] API_PORT cannot be 80 (reserved for web server)\n");
         return false;
+    }
+
+    // Перевірка BRIGHTNESS_MAX: 0 (default) or clamped to [DEFAULT_MAX, ABSOLUTE_MAX]
+    if (type == BRIGHTNESS_MAX) {
+        if (value != 0) {
+            if (value > JaamHardwareLed::BRIGHTNESS_ABSOLUTE_MAX) {
+                LOG.printf("[SETTINGS] BRIGHTNESS_MAX %d exceeds absolute max %d\n", value, JaamHardwareLed::BRIGHTNESS_ABSOLUTE_MAX);
+                return false;
+            }
+            if (value < JaamHardwareLed::BRIGHTNESS_DEFAULT_MAX) {
+                LOG.printf("[SETTINGS] BRIGHTNESS_MAX %d below default max %d\n", value, JaamHardwareLed::BRIGHTNESS_DEFAULT_MAX);
+                return false;
+            }
+        }
     }
     
     // Для JAAM2: піни сирени не можуть бути BH1750_POWER_PIN (керуючий пін живлення для сенсора освітлення)

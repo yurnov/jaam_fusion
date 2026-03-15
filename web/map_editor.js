@@ -1,5 +1,7 @@
 // Map Editor functionality
 
+var brightnessData = {};
+
 function loadMapData() {
     fetch('/map-data')
         .then(response => {
@@ -9,7 +11,14 @@ function loadMapData() {
             return response.json();
         })
         .then(data => {
+            brightnessData = {
+                hardware: data.hardware,
+                brightness_max: data.brightness_max,
+                brightness_default_max: data.brightness_default_max,
+                brightness_absolute_max: data.brightness_absolute_max
+            };
             renderMapEditor(data.regions);
+            renderBrightnessSection();
         })
         .catch(err => {
             console.error('Error fetching map data:', err);
@@ -189,6 +198,137 @@ async function importMapFromFile(event) {
     
     // Reset file input
     event.target.value = '';
+}
+
+function renderBrightnessSection() {
+    var container = document.getElementById('brightnessSection');
+    if (!container) return;
+
+    // Only show for custom mapping hardware (type 5)
+    if (brightnessData.hardware !== 5) {
+        container.style.display = 'none';
+        return;
+    }
+
+    container.style.display = 'block';
+
+    var defaultMax = brightnessData.brightness_default_max || 50;
+    var absMax = brightnessData.brightness_absolute_max || 230;
+    var currentMax = brightnessData.brightness_max || 0;
+    var effectiveMax = currentMax > 0 ? currentMax : defaultMax;
+
+    // Clamp to valid range
+    if (effectiveMax < defaultMax) effectiveMax = defaultMax;
+    if (effectiveMax > absMax) effectiveMax = absMax;
+
+    var pctDefault = Math.round(defaultMax / 255 * 100);
+    var pctAbsMax = Math.round(absMax / 255 * 100);
+    var pctCurrent = Math.round(effectiveMax / 255 * 100);
+
+    var isCustomized = currentMax > 0;
+
+    container.innerHTML =
+        '<h3>Максимальна яскравість LED</h3>' +
+        '<div class="brightness-warning">' +
+            '<strong>⚠️ Увага!</strong> Збільшення максимальної яскравості може призвести до пошкодження ' +
+            'плати через високий струм. Змінюйте це значення лише якщо ваше обладнання має достатньо ' +
+            'потужне живлення та відповідну проводку. Ви берете на себе всю відповідальність за можливі пошкодження.' +
+        '</div>' +
+        '<div class="brightness-info">' +
+            'Стандартне обмеження: <strong>' + defaultMax + '</strong> з 255 (~' + pctDefault + '%)' +
+            '<br>Максимально допустиме: <strong>' + absMax + '</strong> з 255 (~' + pctAbsMax + '%)' +
+        '</div>' +
+        '<div class="brightness-accept">' +
+            '<label>' +
+                '<input type="checkbox" id="brightnessRiskAccept"' + (isCustomized ? ' checked' : '') + ' onchange="toggleBrightnessControls()">' +
+                ' Я розумію ризики та приймаю відповідальність за можливі пошкодження обладнання' +
+            '</label>' +
+        '</div>' +
+        '<div class="brightness-controls" id="brightnessControls" style="display:' + (isCustomized ? 'block' : 'none') + ';">' +
+            '<label for="brightnessMaxSlider">Максимальна яскравість: <span id="brightnessMaxValue">' + effectiveMax + '</span> (~<span id="brightnessMaxPct">' + pctCurrent + '</span>%)</label>' +
+            '<input type="range" id="brightnessMaxSlider" min="' + defaultMax + '" max="' + absMax + '" value="' + effectiveMax + '" oninput="updateBrightnessDisplay(this.value)">' +
+            '<button class="brightness-save-btn" id="brightnessSaveBtn" onclick="saveBrightnessMax()">Зберегти яскравість</button>' +
+            '<button class="brightness-reset-btn" id="brightnessResetBtn" onclick="resetBrightnessMax()">Скинути до стандартного</button>' +
+        '</div>';
+}
+
+function toggleBrightnessControls() {
+    var checkbox = document.getElementById('brightnessRiskAccept');
+    var controls = document.getElementById('brightnessControls');
+    if (!checkbox || !controls) return;
+
+    if (checkbox.checked) {
+        controls.style.display = 'block';
+    } else {
+        controls.style.display = 'none';
+    }
+}
+
+function updateBrightnessDisplay(value) {
+    var valEl = document.getElementById('brightnessMaxValue');
+    var pctEl = document.getElementById('brightnessMaxPct');
+    if (valEl) valEl.textContent = value;
+    if (pctEl) pctEl.textContent = Math.round(value / 255 * 100);
+}
+
+function saveBrightnessMax() {
+    var slider = document.getElementById('brightnessMaxSlider');
+    var btn = document.getElementById('brightnessSaveBtn');
+    if (!slider || !btn) return;
+
+    var value = parseInt(slider.value, 10);
+    btn.disabled = true;
+    btn.textContent = 'Збереження...';
+
+    fetch('/parameter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'name=brightness_max&value=' + value
+    })
+    .then(function(response) {
+        if (!response.ok) throw new Error('Save failed');
+        btn.textContent = 'Збережено!';
+        brightnessData.brightness_max = value;
+        setTimeout(function() {
+            btn.disabled = false;
+            btn.textContent = 'Зберегти яскравість';
+        }, 2000);
+    })
+    .catch(function(err) {
+        console.error('Error saving brightness:', err);
+        btn.textContent = 'Помилка!';
+        setTimeout(function() {
+            btn.disabled = false;
+            btn.textContent = 'Зберегти яскравість';
+        }, 2000);
+    });
+}
+
+function resetBrightnessMax() {
+    var btn = document.getElementById('brightnessResetBtn');
+    if (!btn) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Скидання...';
+
+    fetch('/parameter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'name=brightness_max&value=0'
+    })
+    .then(function(response) {
+        if (!response.ok) throw new Error('Reset failed');
+        brightnessData.brightness_max = 0;
+        renderBrightnessSection();
+    })
+    .catch(function(err) {
+        console.error('Error resetting brightness:', err);
+        btn.textContent = 'Помилка!';
+        setTimeout(function() {
+            btn.disabled = false;
+            btn.textContent = 'Скинути до стандартного';
+        }, 2000);
+    });
 }
 
 // Load map data when page loads
