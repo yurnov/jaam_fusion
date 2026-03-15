@@ -212,8 +212,8 @@ function renderBrightnessSection() {
 
     container.style.display = 'block';
 
-    var defaultPct = brightnessData.brightness_default_pct || 20;
-    var absPct = brightnessData.brightness_absolute_pct || 78;
+    var defaultPct = brightnessData.brightness_default_pct || 25;
+    var absPct = brightnessData.brightness_absolute_pct || 100;
     var currentPct = brightnessData.brightness_max || 0;
     var effectivePct = currentPct > 0 ? currentPct : defaultPct;
 
@@ -234,8 +234,7 @@ function renderBrightnessSection() {
             'Ви берете на себе всю відповідальність за можливі пошкодження.' +
         '</div>' +
         '<div class="brightness-info">' +
-            'Стандартне обмеження: <strong>' + defaultPct + '%</strong>' +
-            '<br>Максимально допустиме: <strong>' + absPct + '%</strong>' +
+            'Стандартне значення: <strong>' + defaultPct + '</strong> з ' + absPct +
         '</div>' +
         '<div class="brightness-accept">' +
             '<label>' +
@@ -244,7 +243,7 @@ function renderBrightnessSection() {
             '</label>' +
         '</div>' +
         '<div class="brightness-controls" id="brightnessControls" style="display:' + (isCustomized ? 'block' : 'none') + ';">' +
-            '<label for="brightnessMaxSlider">Максимальна яскравість: <span id="brightnessMaxPct">' + effectivePct + '</span>%</label>' +
+            '<label for="brightnessMaxSlider">Максимальна яскравість: <span id="brightnessMaxPct">' + effectivePct + '</span> з ' + absPct + '</label>' +
             '<input type="range" id="brightnessMaxSlider" min="' + defaultPct + '" max="' + absPct + '" value="' + effectivePct + '" aria-label="Максимальна яскравість" oninput="updateBrightnessDisplay(this.value)">' +
             '<button class="brightness-save-btn" id="brightnessSaveBtn" onclick="saveBrightnessMax()">Зберегти яскравість</button>' +
             '<button class="brightness-reset-btn" id="brightnessResetBtn" onclick="resetBrightnessMax()">Скинути до стандартного</button>' +

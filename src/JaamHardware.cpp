@@ -293,8 +293,8 @@ uint8_t JaamHardware::getMaxBrightness() {
         default: {
             int customMaxPct = settings.getInt(BRIGHTNESS_MAX);
             if (customMaxPct > 0) {
-                // Convert user percentage (1-100) to raw brightness (0-255)
-                int customMax = customMaxPct * 255 / 100;
+                // Convert user scale (0-100) to raw brightness: raw = pct * ABSOLUTE_MAX / 100
+                int customMax = customMaxPct * JaamHardwareLed::BRIGHTNESS_ABSOLUTE_MAX / 100;
                 // Defensive clamping as safety net: even if validation is bypassed
                 // (e.g. direct preferences edit, backup restore), hardware limits are enforced
                 if (customMax > JaamHardwareLed::BRIGHTNESS_ABSOLUTE_MAX) {
