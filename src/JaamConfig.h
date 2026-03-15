@@ -795,6 +795,7 @@ enum Type {
     API_ENABLED,
     API_PORT,
     BRIGHTNESS_MAX,
+    BRIGHTNESS_MAX_ACCEPT,
 };
 
 static SettingListItem DISTRICTS[MAX_REGIONS] = {
