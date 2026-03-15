@@ -327,15 +327,15 @@ bool JaamSettings::validateIntSetting(Type type, int value) {
         return false;
     }
 
-    // Перевірка BRIGHTNESS_MAX: 0 (default) or clamped to [DEFAULT_MAX, ABSOLUTE_MAX]
+    // Перевірка BRIGHTNESS_MAX: 0 (default) or percentage in [DEFAULT_MAX_PCT, ABSOLUTE_MAX_PCT]
     if (type == BRIGHTNESS_MAX) {
         if (value != 0) {
-            if (value > JaamHardwareLed::BRIGHTNESS_ABSOLUTE_MAX) {
-                LOG.printf("[SETTINGS] BRIGHTNESS_MAX %d exceeds absolute max %d\n", value, JaamHardwareLed::BRIGHTNESS_ABSOLUTE_MAX);
+            if (value > JaamHardwareLed::BRIGHTNESS_ABSOLUTE_MAX_PCT) {
+                LOG.printf("[SETTINGS] BRIGHTNESS_MAX %d%% exceeds absolute max %d%%\n", value, JaamHardwareLed::BRIGHTNESS_ABSOLUTE_MAX_PCT);
                 return false;
             }
-            if (value < JaamHardwareLed::BRIGHTNESS_DEFAULT_MAX) {
-                LOG.printf("[SETTINGS] BRIGHTNESS_MAX %d below default max %d\n", value, JaamHardwareLed::BRIGHTNESS_DEFAULT_MAX);
+            if (value < JaamHardwareLed::BRIGHTNESS_DEFAULT_MAX_PCT) {
+                LOG.printf("[SETTINGS] BRIGHTNESS_MAX %d%% below default max %d%%\n", value, JaamHardwareLed::BRIGHTNESS_DEFAULT_MAX_PCT);
                 return false;
             }
         }

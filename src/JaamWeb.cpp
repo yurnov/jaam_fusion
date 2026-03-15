@@ -892,8 +892,8 @@ void JaamWeb::handleMapData() {
     int hwType = settings->getInt(HARDWARE);
     doc["hardware"] = hwType;
     doc["brightness_max"] = settings->getInt(BRIGHTNESS_MAX);
-    doc["brightness_default_max"] = JaamHardwareLed::BRIGHTNESS_DEFAULT_MAX;
-    doc["brightness_absolute_max"] = JaamHardwareLed::BRIGHTNESS_ABSOLUTE_MAX;
+    doc["brightness_default_pct"] = JaamHardwareLed::BRIGHTNESS_DEFAULT_MAX_PCT;
+    doc["brightness_absolute_pct"] = JaamHardwareLed::BRIGHTNESS_ABSOLUTE_MAX_PCT;
     
     // Серіалізуємо JSON у компактному форматі
     String response;

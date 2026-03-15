@@ -14,8 +14,8 @@ function loadMapData() {
             brightnessData = {
                 hardware: data.hardware,
                 brightness_max: data.brightness_max,
-                brightness_default_max: data.brightness_default_max,
-                brightness_absolute_max: data.brightness_absolute_max
+                brightness_default_pct: data.brightness_default_pct,
+                brightness_absolute_pct: data.brightness_absolute_pct
             };
             renderMapEditor(data.regions);
             renderBrightnessSection();
@@ -212,31 +212,30 @@ function renderBrightnessSection() {
 
     container.style.display = 'block';
 
-    var defaultMax = brightnessData.brightness_default_max || 50;
-    var absMax = brightnessData.brightness_absolute_max || 230;
-    var currentMax = brightnessData.brightness_max || 0;
-    var effectiveMax = currentMax > 0 ? currentMax : defaultMax;
+    var defaultPct = brightnessData.brightness_default_pct || 20;
+    var absPct = brightnessData.brightness_absolute_pct || 78;
+    var currentPct = brightnessData.brightness_max || 0;
+    var effectivePct = currentPct > 0 ? currentPct : defaultPct;
 
     // Clamp to valid range
-    if (effectiveMax < defaultMax) effectiveMax = defaultMax;
-    if (effectiveMax > absMax) effectiveMax = absMax;
+    if (effectivePct < defaultPct) effectivePct = defaultPct;
+    if (effectivePct > absPct) effectivePct = absPct;
 
-    var pctDefault = Math.round(defaultMax / 255 * 100);
-    var pctAbsMax = Math.round(absMax / 255 * 100);
-    var pctCurrent = Math.round(effectiveMax / 255 * 100);
-
-    var isCustomized = currentMax > 0;
+    var isCustomized = currentPct > 0;
 
     container.innerHTML =
         '<h3>Максимальна яскравість LED</h3>' +
         '<div class="brightness-warning">' +
             '<strong>⚠️ Увага!</strong> Збільшення максимальної яскравості може призвести до пошкодження ' +
-            'плати через високий струм. Змінюйте це значення лише якщо ваше обладнання має достатньо ' +
-            'потужне живлення та відповідну проводку. Ви берете на себе всю відповідальність за можливі пошкодження.' +
+            'плати через високий струм та перегрів. При високій яскравості пристрій може сильно нагріватися, ' +
+            'особливо при великій кількості LED. Нагрівання є основним обмежуючим фактором і може призвести ' +
+            'до виходу компонентів з ладу. Змінюйте це значення лише якщо ваше обладнання має достатньо ' +
+            'потужне живлення, відповідну проводку та належне охолодження. ' +
+            'Ви берете на себе всю відповідальність за можливі пошкодження.' +
         '</div>' +
         '<div class="brightness-info">' +
-            'Стандартне обмеження: <strong>' + defaultMax + '</strong> з 255 (~' + pctDefault + '%)' +
-            '<br>Максимально допустиме: <strong>' + absMax + '</strong> з 255 (~' + pctAbsMax + '%)' +
+            'Стандартне обмеження: <strong>' + defaultPct + '%</strong>' +
+            '<br>Максимально допустиме: <strong>' + absPct + '%</strong>' +
         '</div>' +
         '<div class="brightness-accept">' +
             '<label>' +
@@ -245,8 +244,8 @@ function renderBrightnessSection() {
             '</label>' +
         '</div>' +
         '<div class="brightness-controls" id="brightnessControls" style="display:' + (isCustomized ? 'block' : 'none') + ';">' +
-            '<label for="brightnessMaxSlider">Максимальна яскравість: <span id="brightnessMaxValue">' + effectiveMax + '</span> (~<span id="brightnessMaxPct">' + pctCurrent + '</span>%)</label>' +
-            '<input type="range" id="brightnessMaxSlider" min="' + defaultMax + '" max="' + absMax + '" value="' + effectiveMax + '" aria-label="Максимальна яскравість" oninput="updateBrightnessDisplay(this.value)">' +
+            '<label for="brightnessMaxSlider">Максимальна яскравість: <span id="brightnessMaxPct">' + effectivePct + '</span>%</label>' +
+            '<input type="range" id="brightnessMaxSlider" min="' + defaultPct + '" max="' + absPct + '" value="' + effectivePct + '" aria-label="Максимальна яскравість" oninput="updateBrightnessDisplay(this.value)">' +
             '<button class="brightness-save-btn" id="brightnessSaveBtn" onclick="saveBrightnessMax()">Зберегти яскравість</button>' +
             '<button class="brightness-reset-btn" id="brightnessResetBtn" onclick="resetBrightnessMax()">Скинути до стандартного</button>' +
         '</div>';
@@ -265,10 +264,8 @@ function toggleBrightnessControls() {
 }
 
 function updateBrightnessDisplay(value) {
-    var valEl = document.getElementById('brightnessMaxValue');
     var pctEl = document.getElementById('brightnessMaxPct');
-    if (valEl) valEl.textContent = value;
-    if (pctEl) pctEl.textContent = Math.round(value / 255 * 100);
+    if (pctEl) pctEl.textContent = value;
 }
 
 function saveBrightnessMax() {
