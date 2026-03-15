@@ -293,11 +293,11 @@ uint8_t JaamHardware::getMaxBrightness() {
         default: {
             int customMax = settings.getInt(BRIGHTNESS_MAX);
             if (customMax > 0) {
-                // Clamp to safety limit
+                // Defensive clamping as safety net: even if validation is bypassed
+                // (e.g. direct preferences edit, backup restore), hardware limits are enforced
                 if (customMax > JaamHardwareLed::BRIGHTNESS_ABSOLUTE_MAX) {
                     customMax = JaamHardwareLed::BRIGHTNESS_ABSOLUTE_MAX;
                 }
-                // Ensure it's at least the default minimum brightness
                 if (customMax < JaamHardwareLed::BRIGHTNESS_DEFAULT_MAX) {
                     customMax = JaamHardwareLed::BRIGHTNESS_DEFAULT_MAX;
                 }

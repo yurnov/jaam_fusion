@@ -246,7 +246,7 @@ function renderBrightnessSection() {
         '</div>' +
         '<div class="brightness-controls" id="brightnessControls" style="display:' + (isCustomized ? 'block' : 'none') + ';">' +
             '<label for="brightnessMaxSlider">Максимальна яскравість: <span id="brightnessMaxValue">' + effectiveMax + '</span> (~<span id="brightnessMaxPct">' + pctCurrent + '</span>%)</label>' +
-            '<input type="range" id="brightnessMaxSlider" min="' + defaultMax + '" max="' + absMax + '" value="' + effectiveMax + '" oninput="updateBrightnessDisplay(this.value)">' +
+            '<input type="range" id="brightnessMaxSlider" min="' + defaultMax + '" max="' + absMax + '" value="' + effectiveMax + '" aria-label="Максимальна яскравість" oninput="updateBrightnessDisplay(this.value)">' +
             '<button class="brightness-save-btn" id="brightnessSaveBtn" onclick="saveBrightnessMax()">Зберегти яскравість</button>' +
             '<button class="brightness-reset-btn" id="brightnessResetBtn" onclick="resetBrightnessMax()">Скинути до стандартного</button>' +
         '</div>';
