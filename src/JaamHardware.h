@@ -69,11 +69,11 @@ namespace JaamHardwareLed {
     constexpr uint8_t BRIGHTNESS_JAAM_1_3_MIN = 3;
     constexpr uint8_t BRIGHTNESS_JAAM_2_1_MIN = 2;
 
-    // Absolute maximum brightness cap (safety limit, ~78% of 255)
-    constexpr uint8_t BRIGHTNESS_ABSOLUTE_MAX = 200;
+    // Absolute maximum brightness cap (safety limit, ~70% of 255)
+    constexpr uint8_t BRIGHTNESS_ABSOLUTE_MAX = 180;
 
     // User-facing 0-100 scale constants (raw = user_value * ABSOLUTE_MAX / 100)
-    constexpr uint8_t BRIGHTNESS_DEFAULT_MAX_PCT = 25;   // BRIGHTNESS_DEFAULT_MAX * 100 / BRIGHTNESS_ABSOLUTE_MAX
+    constexpr uint8_t BRIGHTNESS_DEFAULT_MAX_PCT = 28;   // BRIGHTNESS_DEFAULT_MAX * 100 / BRIGHTNESS_ABSOLUTE_MAX
     constexpr uint8_t BRIGHTNESS_ABSOLUTE_MAX_PCT = 100; // maps to BRIGHTNESS_ABSOLUTE_MAX
 }
 

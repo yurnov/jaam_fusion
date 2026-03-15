@@ -212,7 +212,7 @@ function renderBrightnessSection() {
 
     container.style.display = 'block';
 
-    var defaultPct = brightnessData.brightness_default_pct || 25;
+    var defaultPct = brightnessData.brightness_default_pct || 28;
     var absPct = brightnessData.brightness_absolute_pct || 100;
     var currentPct = brightnessData.brightness_max || 0;
     var effectivePct = currentPct > 0 ? currentPct : defaultPct;
